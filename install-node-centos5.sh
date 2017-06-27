@@ -60,7 +60,7 @@ esac
 
 case "$OSTYPE" in
     linux-gnu) ;;
-    *) die "$OSTYPE OS is not supported."
+    #*) die "$OSTYPE OS is not supported."
 esac
 
 nodeVersion=5.12.0
@@ -81,6 +81,7 @@ Node Portable Environment Setup Script
 Usage: $0 [options]
 options :
   -h | --help                   print this
+  -v | --version=node-version   select node version to download (default : $nodeVersion)
   -a | --arch=x86|x86_64|32|64  select node architecture to download (default : $nodeArch)
   -f | --force                  force download and installation
 EOF
@@ -94,6 +95,14 @@ EOF
 	    nodeArch=${1:7}
 	    shift
 	    ;;
+	-v*)
+	    nodeVersion=${1:2}
+	    shift
+	    ;;
+	--version=*)
+	    nodeVersion=${1:10}
+	    shift
+	    ;;
 	-f|--force)
 	    forceInstall=yes
 	    shift
@@ -102,6 +111,10 @@ EOF
         *) shift;;
     esac
 done
+
+if [ "$nodeVersion" != "5.12.0" ]; then
+   die "Unsupported node version: $nodeVersion"
+fi
 
 case "$nodeArch" in
     x86_64|x64|64) nodeArch=x64;;
